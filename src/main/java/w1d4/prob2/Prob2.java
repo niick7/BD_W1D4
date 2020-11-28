@@ -1,6 +1,6 @@
 package w1d4.prob2;
 
-public class Application {
+public class Prob2 {
   public static void main(String[] args) {
     WordCount wordCount = new WordCount();
     System.out.println("Number of Input-Splits: " + WordCount.m);
@@ -9,10 +9,13 @@ public class Application {
       System.out.println("Mapper " + i + " Input:");
       Mapper mapper = new Mapper();
       mapper.map("assets/prob2/input" + (i + 1) + ".txt");
-      System.out.println("Mapper " + i + " Output: \n" + mapper);
       wordCount.getMappers()[i] = mapper;
     }
-    wordCount.shuffleSort();
+    for(int i = 0; i < WordCount.m; i++) {
+      Mapper mapper = wordCount.getMappers()[i];
+      System.out.println("Mapper " + i + " Output: " + mapper);
+    }
+    wordCount.buildReducer();
     wordCount.createReducerGroupByPairs();
     wordCount.doReduce();
   }

@@ -2,7 +2,7 @@ package w1d4.prob2;
 
 public class Pair {
   private final String key;
-  private int value = 1;
+  private double value;
 
   public Pair(String key) {
     this.key = key;
@@ -12,11 +12,11 @@ public class Pair {
     return key;
   }
 
-  public void setValue(int value) {
+  public void setValue(double value) {
     this.value = value;
   }
 
-  public int getValue() {
+  public double getValue() {
     return value;
   }
 

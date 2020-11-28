@@ -21,7 +21,7 @@ public class WordCount {
 
   public Mapper[] getMappers() { return mappers; }
 
-  public void shuffleSort() {
+  public void setReducers() {
     int mapperLength = mappers.length;
     int reducerLength = reducers.length;
     for(int im = 0; im < mapperLength; im++) {

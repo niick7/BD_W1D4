@@ -1,6 +1,6 @@
 package w1d4.prob1;
 
-public class Application {
+public class Prob1 {
   public static void main(String[] args) {
     WordCount wordCount = new WordCount();
     System.out.println("Number of Input-Splits: " + WordCount.m);
@@ -15,7 +15,7 @@ public class Application {
       Mapper mapper = wordCount.getMappers()[i];
       System.out.print("Mapper " + i + " Output: \n" + mapper);
     }
-    wordCount.shuffleSort();
+    wordCount.setReducers();
     wordCount.createReducerGroupByPairs();
     wordCount.doReduce();
   }

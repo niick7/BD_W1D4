@@ -3,8 +3,8 @@ package w1d4.prob2;
 import java.util.List;
 
 public class WordCount {
-  public static final int m = 3;
-  public static final int r = 4;
+  public static final int m = 4;
+  public static final int r = 3;
   private Mapper[] mappers;
   private Reducer[] reducers;
 
@@ -21,26 +21,25 @@ public class WordCount {
 
   public Mapper[] getMappers() { return mappers; }
 
-  public void shuffleSort() {
+  public void buildReducer() {
     int mapperLength = mappers.length;
     int reducerLength = reducers.length;
     for(int im = 0; im < mapperLength; im++) {
-      List<Pair> pairs = mappers[im].getPairs();
-      int pairLength = pairs.size();
+      List<KeyInPair> groupByPairs = mappers[im].getGroupByPairs();
+      int length = groupByPairs.size();
       String str = "Pairs send from Mapper " + im;
       for(int ir = 0; ir < reducerLength; ir++){
         System.out.println(str + " Reducer " + ir + "");
-        for(int i = 0; i < pairLength; i++) {
-          Pair pair = pairs.get(i);
-          String key = pair.getKey();
+        for(int i = 0; i < length; i++) {
+          KeyInPair keyInPair = groupByPairs.get(i);
+          String key = keyInPair.getKey();
           if(ir == getPartition(key)) {
-            System.out.print(pair);
-            this.reducers[ir].addPair(pair);
+            System.out.print(keyInPair);
+            this.reducers[ir].addGroupByIntPair(keyInPair);
           }
         }
       }
     }
-    System.out.println("");
   }
 
   public int getPartition(String key){
@@ -51,8 +50,8 @@ public class WordCount {
     for(int i = 0; i < r; i++) {
       System.out.println("Reducer " + i + " input");
       Reducer reducer = reducers[i];
-      reducer.createGroupByPairs();
-      reducer.printGroupByPairs();
+      reducer.createGroupByIntPairs();
+      reducer.printGroupByIntPairs();
     }
   }
 

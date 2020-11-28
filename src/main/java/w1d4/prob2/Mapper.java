@@ -9,9 +9,9 @@ public class Mapper {
   private static final String splitBySpaceOrMinusSign = "[\\s-]+";
   private static final String fileExceptionMessage = "An error occurred.";
   private static final String isNumberOrContainUnderscoreMatcherRegex = "[0-9]|_";
-  List<Pair> pairs;
+  List<KeyInPair> keyInPairs;
   public Mapper() {
-    this.pairs = new ArrayList<>();
+    this.keyInPairs = new ArrayList<>();
   }
 
   public void map(String fileName) {
@@ -24,30 +24,28 @@ public class Mapper {
         List<String> wordsInLine = Arrays.asList(line.split(splitBySpaceOrMinusSign));
         for(String word : wordsInLine) {
           word = trimWord(word);
-          if(isWord(word))
-            this.addPairFromKey(word);
+          if(isWord(word)) {
+            String firstWordLetter = String.valueOf(word.charAt(0)).toLowerCase();
+            KeyInPair keyInPair = getGroupByPairByKey(firstWordLetter);
+            if(keyInPair == null) {
+              KeyInPair gbp = new KeyInPair(firstWordLetter);
+              IntPair intPair = gbp.getIntPair();
+              intPair.setKey(word.length());
+              intPair.setValue(1);
+              keyInPairs.add(gbp);
+            } else {
+              IntPair intPair = keyInPair.getIntPair();
+              intPair.setKey(intPair.getKey() + word.length());
+              intPair.setValue(intPair.getValue() + 1);
+            }
+          }
         }
-        this.sortPair();
       }
     }
     catch(FileNotFoundException e) {
       System.out.println(fileExceptionMessage);
       e.printStackTrace();
     }
-  }
-
-  public void addPairFromKey(String key) {
-    Pair pair = new Pair(key.toLowerCase());
-    pairs.add(pair);
-  }
-
-  public List<Pair> getPairs() {
-    return pairs;
-  }
-
-  public List<Pair> sortPair() {
-    pairs.sort(Comparator.comparing(Pair::getKey));
-    return pairs;
   }
 
   public static String trimWord(String word) {
@@ -65,12 +63,28 @@ public class Mapper {
     return true;
   }
 
+  public List<KeyInPair> getGroupByPairs() { return keyInPairs; }
+
+  public List<KeyInPair> sortGroupByPair() {
+    keyInPairs.sort(Comparator.comparing(KeyInPair::getKey));
+    return keyInPairs;
+  }
+
+  public KeyInPair getGroupByPairByKey(String key) {
+    for(KeyInPair keyInPair : keyInPairs) {
+      if(keyInPair.getKey().equals(key))
+        return keyInPair;
+    }
+
+    return null;
+  }
+
   @Override
   public String toString() {
-    String str = "";
+    String str = "\n";
 
-    for(Pair p : pairs) {
-      str += p;
+    for(KeyInPair keyInPair : keyInPairs) {
+      str += keyInPair;
     }
     return str;
   }

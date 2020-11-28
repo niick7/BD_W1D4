@@ -5,18 +5,25 @@ import java.util.Comparator;
 import java.util.List;
 
 public class Reducer {
-  private List<Pair> pairs;
-  private List<GroupByPair> groupByPairs;
+  private List<KeyInPair> keyInPairs;
+  private List<GroupByIntPair> groupByIntPairs;
 
   public Reducer() {
-    this.pairs = new ArrayList<>();
+    this.keyInPairs = new ArrayList<>();
   }
 
   public void reduce() {
     List<Pair> pairs = new ArrayList<>();
-    for(GroupByPair g : this.getGroupByPairs()) {
+    for(GroupByIntPair g : groupByIntPairs) {
       Pair pair = new Pair(g.getKey());
-      pair.setValue(g.getValues().size());
+      double value = 0;
+      double sum = 0;
+      int times = 0;
+      for(IntPair intPair : g.getIntPairs()) {
+        sum += intPair.getKey();
+        times += intPair.getValue();
+      }
+      pair.setValue(sum/times);
       pairs.add(pair);
     }
 
@@ -25,41 +32,41 @@ public class Reducer {
     }
   }
 
-  public List<GroupByPair> getGroupByPairs() {
-    return groupByPairs;
+  public List<KeyInPair> getGroupByPairs() {
+    return keyInPairs;
   }
 
-  public void addPair(Pair pair) {
-    this.pairs.add(pair);
+  public void addGroupByIntPair(KeyInPair keyInPair) {
+    this.keyInPairs.add(keyInPair);
   }
 
-  public List<Pair> sortPair() {
-    pairs.sort(Comparator.comparing(Pair::getKey));
-    return pairs;
+  public List<KeyInPair> sortPair() {
+    keyInPairs.sort(Comparator.comparing(KeyInPair::getKey));
+    return keyInPairs;
   }
 
-  public void createGroupByPairs() {
-    List<GroupByPair> groupByPairs = new ArrayList<>();
+  public void createGroupByIntPairs() {
+    List<GroupByIntPair> groupByIntPairs = new ArrayList<>();
     String tempKey = "";
-    GroupByPair tempGroupByPair = new GroupByPair(tempKey);
-    for(Pair pair : sortPair()) {
-      String key = pair.getKey();
-      GroupByPair groupByPair = new GroupByPair(key);
+    GroupByIntPair tempGroupByIntPair = new GroupByIntPair(tempKey);
+    for(KeyInPair keyInPair : sortPair()) {
+      String key = keyInPair.getKey();
+      GroupByIntPair groupByIntPair = new GroupByIntPair(key);
       if(!tempKey.equals(key)) {
-        groupByPairs.add(groupByPair);
+        groupByIntPairs.add(groupByIntPair);
         tempKey = key;
-        tempGroupByPair = groupByPair;
+        tempGroupByIntPair = groupByIntPair;
       } else {
-        groupByPair = tempGroupByPair;
+        groupByIntPair = tempGroupByIntPair;
       }
-      groupByPair.addValue(pair.getValue());
+      groupByIntPair.addIntPair(keyInPair.getIntPair());
     }
-    this.groupByPairs = groupByPairs;
+    this.groupByIntPairs = groupByIntPairs;
   }
 
-  public void printGroupByPairs() {
-    for(GroupByPair groupByPair : groupByPairs) {
-      System.out.println(groupByPair);
+  public void printGroupByIntPairs() {
+    for(GroupByIntPair groupByIntPair : groupByIntPairs) {
+      System.out.print(groupByIntPair);
     }
   }
 }

@@ -56,11 +56,6 @@ public class Mapper {
     return pairs;
   }
 
-  public List<Pair> sortPair() {
-    pairs.sort(Comparator.comparing(Pair::getKey));
-    return pairs;
-  }
-
   public static String trimWord(String word) {
     word = word.replace(",", "");
     word = word.replace(".", "");
